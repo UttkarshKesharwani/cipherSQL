@@ -1,29 +1,16 @@
 
 
 services:
-
   frontend:
-    # Your Dockerfile builds static files: Vite reads env during build, not runtime.So: env_file: - ./client/.env.docker ,Does nothing unless passed as build args.
-
-    build: 
-      context: ./client
-      dockerfile: Dockerfile
-      args:
-        VITE_API_URL: http://localhost:5000
+    image: uttkarsh63066/ciphersql-frontend:latest
     container_name: frontend
     ports:
-      - "3000:80"
+      - "80:80"
     networks:
       - cipher-net
-    # depends_on:
-    #   backend:
-    #     condition: service_healthy
-    
 
   backend:
-    build: 
-      context: ./server
-      dockerfile: Dockerfile
+    image: uttkarsh63066/ciphersql-backend:latest
     container_name: backend
     env_file:
       - ./server/.env.docker
@@ -36,11 +23,6 @@ services:
         condition: service_healthy
       mongo:
         condition: service_healthy
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:5000"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 3
 
   postgres:
     image: postgres:18
@@ -103,18 +85,4 @@ networks:
   cipher-net:
     driver: bridge
 
-
- 
-
-# doceker run -d -p 80:80 --name ciphersql -e POSTGRES_PASSWORD=postgres -v /data/db:/data/db  --network cipher-net postgres
-# docker exec -it postgres psql -U postgres -d ciphersql
-
-
-
-
-# mongo-init
-# env_file:
-#       - ./server/.env.docker
-
-# root .env file 
 
